@@ -1126,8 +1126,6 @@ class PetWindow(QWidget):
                 }
             )
 
-            print("status:", r.status_code)
-
             data = r.json()
 
             weather = data["current_condition"][0]
