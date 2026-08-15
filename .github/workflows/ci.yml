@@ -28,9 +28,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt zstandard
       - name: Run unit tests
-        run: python tests/test_watch.py
+        run: |
+          python tests/test_watch.py
+          python tests/test_security_fixes.py
       - name: Compile-check all sources
         run: |
           python -m py_compile desktop_pet.py balance.py voice.py dsh_watch.py dsh_service.py dsh_push.py
           python -m py_compile tools/synth_candidates.py tools/synth_kids.py tools/preprocess.py tools/preprocess2.py tools/make_zip.py
-          python -m py_compile tests/test_watch.py
+          python -m py_compile tests/test_watch.py tests/test_security_fixes.py

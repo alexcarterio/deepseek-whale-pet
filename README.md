@@ -123,6 +123,33 @@ actual `config.json` next to the script (in source mode) or under
 
 ---
 
+## Privacy & Security
+
+This is a pure client-side desktop app: it opens no listening ports and has no
+inbound attack surface. Outbound data is limited to the following, all sent over
+HTTPS:
+
+| Data | Destination | Notes |
+|---|---|---|
+| Chat content + context (max 40 messages, in memory only) | DeepSeek API | Sent only while you use chat. |
+| City name | wttr.in | Inherent to the weather lookup. |
+| Voice announcement text | Microsoft Edge TTS | Fixed phrases and lines only — **never includes DSH session titles**. |
+| DSH session data | none | Read-only access to local state files; nothing is written or transmitted. |
+
+**API key storage:** your API key is stored in plaintext in `config.json`
+(readable only by your own Windows account by default). To avoid this, leave
+`ds_api_key` empty and keep the key in the DSH credentials file instead; more
+advanced setups can use the Windows Credential Manager (DPAPI).
+
+**Phone notifications (ntfy):** when `dsh_push.py` is enabled, session titles
+are included in the notification body sent to the ntfy server. If that matters
+to you, self-host ntfy by setting `NTFY_URL` to your own server.
+
+**DSH access:** the pet only reads DSH's local session data. It never modifies,
+stops, or restarts DSH.
+
+---
+
 ## Usage
 
 ### Starting

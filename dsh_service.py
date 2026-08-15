@@ -31,6 +31,20 @@ class DshService:
     def _cmd_path(self):
         return os.path.join(self.dsh_dir, "node_modules", ".bin", "dsh.cmd")
 
+    def _launch_argv(self):
+        """Shell-free launch arguments equivalent to dsh.cmd:
+        [node.exe, @deepseek-ai/dsh/lib/bin.js, web]. Prefer the bundled node in
+        node_modules/.bin, otherwise fall back to node on PATH. Security audit L1:
+        eliminates the shell injection surface.
+        """
+        bin_dir = os.path.join(self.dsh_dir, "node_modules", ".bin")
+        node_exe = os.path.join(bin_dir, "node.exe")
+        if not os.path.exists(node_exe):
+            node_exe = "node"
+        bin_js = os.path.join(self.dsh_dir, "node_modules",
+                              "@deepseek-ai", "dsh", "lib", "bin.js")
+        return [node_exe, bin_js, "web"]
+
     def is_running(self, timeout=1.5):
         """Port reachable + response contains the DSH marker -> DSH Web is up."""
         try:
@@ -56,15 +70,15 @@ class DshService:
         if self.is_running():
             return {"started": False, "already": True, "error": None, "cmd": None, "dry_run": False}
 
-        cmd_path = self._cmd_path()
+        argv = self._launch_argv()
         if not os.path.isdir(self.dsh_dir):
             return {"started": False, "already": False,
                     "error": f"DSH directory does not exist: {self.dsh_dir}", "cmd": None, "dry_run": False}
-        if not os.path.exists(cmd_path):
+        if not os.path.exists(argv[1]):
             return {"started": False, "already": False,
-                    "error": f"DSH launcher not found: {cmd_path}", "cmd": None, "dry_run": False}
+                    "error": f"DSH launcher not found: {argv[1]}", "cmd": None, "dry_run": False}
 
-        cmd = f'"{cmd_path}" web'
+        cmd = " ".join(f'"{a}"' if " " in a else a for a in argv)
         if self.dry_run:
             self.on_log(f'[dry-run] would run: cd /d "{self.dsh_dir}" && {cmd}')
             return {"started": False, "already": False, "error": None,
@@ -74,9 +88,9 @@ class DshService:
             log_path = os.path.join(self.dsh_dir, "run.pet.log")
             with open(log_path, "ab") as logf:
                 subprocess.Popen(
-                    cmd,
+                    argv,
                     cwd=self.dsh_dir,
-                    shell=True,
+                    shell=False,  # security audit L1: list execution, no shell injection surface
                     stdin=subprocess.DEVNULL,
                     stdout=logf,
                     stderr=subprocess.STDOUT,

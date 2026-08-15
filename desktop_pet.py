@@ -29,6 +29,7 @@ import random
 import subprocess
 import sys
 import threading
+import urllib.parse
 import webbrowser
 
 # ---------- DSH integration capability layer ----------
@@ -749,7 +750,8 @@ class PetWindow(QWidget):
                 else:
                     error_msg = resp.json().get("error", {}).get("message", str(resp.status_code))
                     self._queue_say(f"API error: {error_msg[:12]}")
-                    print(f"[DeepSeek] status: {resp.status_code}, response: {resp.text}")
+                    # security: keep error logs narrow, do not print the full response body
+                    print(f"[DeepSeek] status: {resp.status_code}, error: {error_msg[:80]}")
             except requests.exceptions.Timeout:
                 self._queue_say("Request timed out, check your network")
             except requests.exceptions.ConnectionError:
@@ -1112,7 +1114,9 @@ class PetWindow(QWidget):
             city = self.cfg.get("city", "")
             print("current city:", city)
 
-            url = f"https://wttr.in/{city}?format=j1"
+            # security: URL-encode the city name so spaces/special chars cannot
+            # break the request
+            url = f"https://wttr.in/{urllib.parse.quote(city)}?format=j1"
 
             r = requests.get(
                 url,
@@ -1123,7 +1127,6 @@ class PetWindow(QWidget):
             )
 
             print("status:", r.status_code)
-            print(r.text[:500])
 
             data = r.json()
 
@@ -1230,7 +1233,7 @@ class PetWindow(QWidget):
             self,
             "Set DeepSeek API Key",
             "Enter your API key (get one at platform.deepseek.com):",
-            QLineEdit.EchoMode.Normal,
+            QLineEdit.EchoMode.Password,  # security: do not show the key in plaintext
             self.cfg.get("ds_api_key", "")
         )
         if ok and key.strip():

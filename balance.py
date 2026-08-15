@@ -77,15 +77,26 @@ def format_balance(info, short=False):
 
 
 def load_key_from_dsh_credentials():
-    """Read DEEPSEEK_API_KEY from the DSH credentials file (fallback key source)."""
+    """Read DEEPSEEK_API_KEY from the DSH credentials file (fallback key source).
+
+    Security audit M3 hardening: parse line by line and explicitly skip comment
+    lines (starting with #) and blank lines, so a commented-out key is never
+    mistaken for a live value.
+    """
     cred_path = os.path.join(os.path.expanduser("~"), ".dsh", ".credentials.yaml")
     try:
         with open(cred_path, "r", encoding="utf-8") as f:
-            text = f.read()
+            lines = f.read().splitlines()
     except OSError:
         return ""
-    m = re.search(r"^\s*DEEPSEEK_API_KEY\s*:\s*(\S+)", text, re.MULTILINE)
-    return m.group(1).strip() if m else ""
+    for raw in lines:
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        m = re.match(r"^DEEPSEEK_API_KEY\s*:\s*(\S+)", line)
+        if m:
+            return m.group(1).strip()
+    return ""
 
 
 # ---------- self-check ----------
