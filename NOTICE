@@ -1,0 +1,18 @@
+Whale Pet (DSH-integrated edition)
+=================================
+
+This project is based on https://github.com/1190fasheqi/dafeiyu-pet
+(MIT License). The original pet, sprites, and behavior are retained, and the
+original copyright notice remains in the LICENSE file.
+
+This edition adds a DSH (DeepSeek Harness) integration layer and a set of
+supporting scripts:
+
+  - balance.py          DeepSeek Open Platform balance query
+  - voice.py            Voice announcements (edge-tts / Windows SAPI)
+  - dsh_watch.py        DSH session state monitor
+  - dsh_service.py      DSH process detection and launch
+  - dsh_push.py         Phone notifications via ntfy
+  - synth_*.py          Voice audition/synthesis helper scripts
+
+All new code is released under the same MIT License.

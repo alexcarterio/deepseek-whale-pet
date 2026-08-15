@@ -1,0 +1,21 @@
+{
+    "mode": "wander",
+    "size": 0.7,
+    "topmost": true,
+    "passthrough": false,
+    "autostart": false,
+    "x": 0,
+    "y": 0,
+    "ds_api_key": "",
+    "city": "",
+    "voice_enabled": true,
+    "voice_name": "",
+    "dsh_launch": true,
+    "dsh_dir": "",
+    "dsh_port": 3080,
+    "dsh_startup_delay": 10,
+    "dsh_notify_done": true,
+    "dsh_notify_waiting": true,
+    "dsh_notify_balance_low": true,
+    "balance_low_threshold": 5.0
+}
