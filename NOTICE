@@ -12,7 +12,6 @@ supporting scripts:
   - voice.py            Voice announcements (edge-tts / Windows SAPI)
   - dsh_watch.py        DSH session state monitor
   - dsh_service.py      DSH process detection and launch
-  - dsh_push.py         Phone notifications via ntfy
   - tools/synth_*.py    Voice audition/synthesis helper scripts
   - tools/preprocess.py, tools/preprocess2.py  Sprite remastering helpers
   - tools/make_zip.py   Source packaging helper

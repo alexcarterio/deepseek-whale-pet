@@ -18,7 +18,6 @@ TOP_FILES = [
     "voice.py",
     "dsh_watch.py",
     "dsh_service.py",
-    "dsh_push.py",
     "requirements.txt",
     "README.md",
     "LICENSE",
@@ -28,7 +27,6 @@ TOP_FILES = [
     "icon.ico",
     ".gitignore",
     "start_pet.bat",
-    "start_push.bat",
     "install.bat",
     "uninstall.bat",
 ]

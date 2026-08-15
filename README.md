@@ -49,8 +49,10 @@ restarts DSH.
 - **Auto-launch DSH**: a few seconds after startup, the pet probes
   `127.0.0.1:<dsh_port>` and, if DSH Web is not running, launches it. It only
   *starts* DSH — it never stops or restarts it.
-- **Phone push notifications (optional)**: forward DSH session events to your
-  phone via [ntfy](https://ntfy.sh) (`dsh_push.py`).
+- **Phone push notifications**: forward DSH session events to your phone via
+  [ntfy](https://ntfy.sh) — the helper lives in the
+  [dsh-mobile-access](https://github.com/alexcarterio/dsh-mobile-access)
+  repository (see [Phone Notifications](#phone-notifications-moved)).
 
 ---
 
@@ -141,9 +143,11 @@ HTTPS:
 `ds_api_key` empty and keep the key in the DSH credentials file instead; more
 advanced setups can use the Windows Credential Manager (DPAPI).
 
-**Phone notifications (ntfy):** when `dsh_push.py` is enabled, session titles
-are included in the notification body sent to the ntfy server. If that matters
-to you, self-host ntfy by setting `NTFY_URL` to your own server.
+**Phone notifications (ntfy):** the phone push helper lives in the
+[dsh-mobile-access](https://github.com/alexcarterio/dsh-mobile-access)
+repository. When it is enabled, session titles are included in the notification
+body sent to the ntfy server. If that matters to you, self-host ntfy by setting
+`NTFY_URL` to your own server.
 
 **DSH access:** the pet only reads DSH's local session data. It never modifies,
 stops, or restarts DSH.
@@ -202,41 +206,20 @@ already running.
 
 ---
 
-## Phone Notifications (optional)
+## Phone Notifications (moved)
 
-`dsh_push.py` watches the same DSH session events and pushes them to your phone
-via [ntfy](https://ntfy.sh). Run it with:
+The phone push helper (`dsh_push`) has moved to its own home in the
+**[dsh-mobile-access](https://github.com/alexcarterio/dsh-mobile-access)**
+repository (`dsh-push/` directory), together with the rest of the phone access
+kit. Head there for the watcher, the Windows launcher, and the full
+configuration guide.
 
-```bat
-start_push.bat
-```
-
-or:
-
-```bat
-py -3 dsh_push.py
-```
-
-Test the channel with:
-
-```bat
-py -3 dsh_push.py --test
-```
-
-### Configuration
-
-Set the environment variables before starting (or in your shell profile):
-
-| Variable | Default | Description |
-|---|---|---|
-| `NTFY_URL` | `https://ntfy.sh` | The ntfy server to use. |
-| `NTFY_TOPIC` | `YOUR_NTFY_TOPIC` | **Required.** Your ntfy topic name. A topic acts like a password — pick a long, random value. |
-| `NTFY_TOKEN` | `""` | Optional ntfy account access token. |
-| `NTFY_CLICK` | `""` | Optional URL opened when a notification is tapped (e.g. your DSH web entrypoint). |
-
-To subscribe: install the ntfy app (or use the web UI at
-[https://ntfy.sh](https://ntfy.sh)), subscribe to your topic, and set
-`NTFY_TOPIC` to that exact value.
+> **Privacy:** notifications include the DSH session title in the message body,
+> which is sent to the ntfy server (`https://ntfy.sh` by default). If that
+> matters to you, self-host ntfy and set `NTFY_URL` to your own server.
+>
+> **Existing deployments** that already run the watcher from this repository
+> keep working — nothing about your local setup changes.
 
 ---
 

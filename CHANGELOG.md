@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-08-15
+
+### Changed
+
+- Move the phone push helper out of this repository: `dsh_push.py` and
+  `start_push.bat` now live in the
+  [dsh-mobile-access](https://github.com/alexcarterio/dsh-mobile-access)
+  repository under `dsh-push/`. The README points there and keeps the ntfy
+  privacy note; existing local deployments keep working unchanged.
+- Mark `dsh_watch.py` as the canonical copy (a mirror ships with
+  dsh-mobile-access).
+
 ## [1.0.1] - 2026-08-15
 
 ### Security
