@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- Subagent session filtering in `dsh_watch`: subagent sessions (detected from
+  the `origin` field of the session log) are no longer tracked or announced —
+  only the main session triggers bubbles and voice prompts.
+- Waiting events now carry `kind` (`question` / `approval`) and `tool` fields.
+
+## [1.0.3] - 2026-08-15
+
 ### Changed
 
 - Fully decouple from the phone push feature: remove all phone-notification

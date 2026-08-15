@@ -66,7 +66,7 @@ def _find_call_id(ev):
 class SessionTrace:
     """Folded event state for one session."""
     __slots__ = ("sid", "running", "pending", "waiting", "waiting_kind",
-                 "processed_lines", "title", "mtime", "size", "path")
+                 "processed_lines", "title", "mtime", "size", "path", "subagent")
 
     def __init__(self):
         self.sid = ""
@@ -79,6 +79,7 @@ class SessionTrace:
         self.mtime = 0.0
         self.size = -1
         self.path = ""
+        self.subagent = False    # subagent session: no notifications
 
 
 class DshWatch:
@@ -118,8 +119,28 @@ class DshWatch:
                     trace = SessionTrace()
                     trace.path = path
                     self._traces[sid] = trace
+                    # Subagent sessions are not notified (main session only)
+                    trace.subagent = self._is_subagent(path)
+                if trace.subagent:
+                    continue
                 out[sid] = trace
         return out
+
+    def _is_subagent(self, path):
+        """Read the first log lines and check whether this is a subagent session
+        (origin=subagent)."""
+        try:
+            with open(path, "rb") as f:
+                chunk = self._dctx.stream_reader(f).read(65536)
+            for line in chunk.decode("utf-8", "ignore").splitlines():
+                line = line.strip()
+                if not line:
+                    continue
+                ev = json.loads(line)
+                return ev.get("origin") == "subagent"
+        except Exception:
+            return False
+        return False
 
     # ---------- event reading and folding ----------
     def _read_events(self, path):
@@ -165,7 +186,8 @@ class DshWatch:
                 trace.waiting_kind = "question"
                 if not fresh:
                     emit(dict(type=EVENT_WAITING_USER, session=trace.sid,
-                              title=trace.title))
+                              title=trace.title, kind="question",
+                              tool=name))
         elif t == "tool/result":
             cid = _find_call_id(ev)
             if cid and cid in trace.pending:
@@ -179,7 +201,8 @@ class DshWatch:
                 trace.waiting_kind = "approval"
                 if not fresh:
                     emit(dict(type=EVENT_WAITING_USER, session=trace.sid,
-                              title=trace.title))
+                              title=trace.title, kind="approval",
+                              tool=data.get("toolName") or ""))
         elif t == "approval/decided":
             if trace.waiting and trace.waiting_kind == "approval":
                 trace.waiting = False
