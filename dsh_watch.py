@@ -2,10 +2,6 @@
 """
 DSH session state monitor (Whale Pet capability layer) -- precise event-stream edition.
 
-CANONICAL COPY: this is the canonical version of dsh_watch. A copy also ships
-inside the dsh-mobile-access repository (dsh-push/dsh_watch.py). If you change
-this file, mirror the change there too.
-
 Data sources:
   1. ~/.dsh/sessions/<workspace>/<session-id>/session.jsonl.zstd
      DSH session event log (zstd-compressed JSONL, appended line by line),

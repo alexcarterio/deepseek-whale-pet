@@ -10,8 +10,8 @@ that lives on your desktop, walks around, talks, and keeps an eye on your
 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH)
 sessions. When a DSH work turn finishes, it pops a speech bubble and announces
 it in a cute voice; when DSH is waiting for your approval or a question, it
-nudges you to act. It can also look up your DeepSeek API balance, launch DSH
-for you, and forward DSH events to your phone via ntfy.
+nudges you to act. It can also look up your DeepSeek API balance and launch
+DSH for you.
 
 The pet reads DSH's session data in a **read-only** way and never modifies or
 restarts DSH.
@@ -49,10 +49,6 @@ restarts DSH.
 - **Auto-launch DSH**: a few seconds after startup, the pet probes
   `127.0.0.1:<dsh_port>` and, if DSH Web is not running, launches it. It only
   *starts* DSH — it never stops or restarts it.
-- **Phone push notifications**: forward DSH session events to your phone via
-  [ntfy](https://ntfy.sh) — the helper lives in the
-  [dsh-mobile-access](https://github.com/alexcarterio/dsh-mobile-access)
-  repository (see [Phone Notifications](#phone-notifications-moved)).
 
 ---
 
@@ -143,12 +139,6 @@ HTTPS:
 `ds_api_key` empty and keep the key in the DSH credentials file instead; more
 advanced setups can use the Windows Credential Manager (DPAPI).
 
-**Phone notifications (ntfy):** the phone push helper lives in the
-[dsh-mobile-access](https://github.com/alexcarterio/dsh-mobile-access)
-repository. When it is enabled, session titles are included in the notification
-body sent to the ntfy server. If that matters to you, self-host ntfy by setting
-`NTFY_URL` to your own server.
-
 **DSH access:** the pet only reads DSH's local session data. It never modifies,
 stops, or restarts DSH.
 
@@ -203,23 +193,6 @@ The pet polls DSH's session data every 2 seconds (read-only):
 Set `DSH_HOME` to override the `~/.dsh` location. `dsh_dir` (or auto-detection)
 tells the pet where DSH is installed so it can launch DSH Web if it is not
 already running.
-
----
-
-## Phone Notifications (moved)
-
-The phone push helper (`dsh_push`) has moved to its own home in the
-**[dsh-mobile-access](https://github.com/alexcarterio/dsh-mobile-access)**
-repository (`dsh-push/` directory), together with the rest of the phone access
-kit. Head there for the watcher, the Windows launcher, and the full
-configuration guide.
-
-> **Privacy:** notifications include the DSH session title in the message body,
-> which is sent to the ntfy server (`https://ntfy.sh` by default). If that
-> matters to you, self-host ntfy and set `NTFY_URL` to your own server.
->
-> **Existing deployments** that already run the watcher from this repository
-> keep working — nothing about your local setup changes.
 
 ---
 
@@ -320,8 +293,6 @@ This project builds on the work of the following projects:
   [rany2/edge-tts](https://github.com/rany2/edge-tts).
 - **ChatTTS** — the audition scripts use
   [2noise/ChatTTS](https://github.com/2noise/ChatTTS).
-- **ntfy** — push notifications via
-  [binwiederhier/ntfy](https://github.com/binwiederhier/ntfy).
 - **wttr.in** — weather data from [wttr.in](https://wttr.in).
 - **DeepSeek Harness** — the DSH session state this pet watches is produced by
   [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness).

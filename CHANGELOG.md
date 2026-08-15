@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Fully decouple from the phone push feature: remove all phone-notification
+  mentions from the README and credits. This repository is the desktop pet
+  only; phone notifications are out of scope here.
+
 ## [1.0.2] - 2026-08-15
 
 ### Changed
