@@ -70,9 +70,10 @@ def main():
     evs = w.poll()
     check("baseline round: ordinary tools running must not report waiting", evs == [])
 
-    # 2) Ordinary tool results -> no event; turn/end -> turn_done
+    # 2) Ordinary tool results -> no event; completed turn/end -> turn_done
     append([tool_call("read", "c1"), tool_call("glob", "c2"),
-            tool_result("c1"), tool_result("c2"), ev("turn/end")])
+            tool_result("c1"), tool_result("c2"),
+            ev("turn/end", {"reason": {"kind": "completed"}})])
     evs = w.poll()
     check("ordinary tools done + turn/end -> turn_done",
           len(evs) == 1 and evs[0]["type"] == EVENT_TURN_DONE)
@@ -93,7 +94,8 @@ def main():
     append([tool_call("read", "c1"), tool_call("glob", "c2"),
             tool_result("c1"), tool_result("c2"), ev("turn/end"),
             tool_call("ask_user_question", "cq1"),
-            tool_result("cq1"), ev("turn/end")])
+            tool_result("cq1"),
+            ev("turn/end", {"reason": {"kind": "completed"}})])
     evs = w.poll()
     check("answer then turn/end -> turn_done with no extra waiting",
           len(evs) == 1 and evs[0]["type"] == EVENT_TURN_DONE)
@@ -112,10 +114,22 @@ def main():
             tool_call("ask_user_question", "cq1"),
             tool_result("cq1"), ev("turn/end"),
             ev("approval/asked", {"id": "ap1"}),
-            ev("approval/decided", {"id": "ap1"}), ev("turn/end")])
+            ev("approval/decided", {"id": "ap1"}),
+            ev("turn/end", {"reason": {"kind": "completed"}})])
     evs = w.poll()
     check("approval decided + turn/end -> turn_done",
           len(evs) == 1 and evs[0]["type"] == EVENT_TURN_DONE)
+
+    # 6b) Aborted turns are not announced: reason != completed stays silent
+    append([tool_call("read", "c1"), tool_call("glob", "c2"),
+            tool_result("c1"), tool_result("c2"), ev("turn/end"),
+            tool_call("ask_user_question", "cq1"),
+            tool_result("cq1"), ev("turn/end"),
+            ev("approval/asked", {"id": "ap1"}),
+            ev("approval/decided", {"id": "ap1"}),
+            ev("turn/end", {"reason": {"kind": "aborted"}})])
+    evs = w.poll()
+    check("aborted turn/end does not report done", evs == [])
 
     # 7) Model thinking (step/start not finished) produces no events
     append([tool_call("read", "c1"), tool_call("glob", "c2"),

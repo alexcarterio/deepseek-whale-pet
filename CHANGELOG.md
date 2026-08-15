@@ -9,6 +9,16 @@
   only the main session triggers bubbles and voice prompts.
 - Waiting events now carry `kind` (`question` / `approval`) and `tool` fields.
 
+### Fixed
+
+- Subagent detection now scans the first 128 KB of the log (instead of only the
+  first line) and re-checks on every file change, so a brand-new subagent file
+  is no longer mistaken for a main session under a first-line race.
+- `turn/end` is only announced when the turn actually completed
+  (`reason.kind == "completed"`); aborted, errored, and cancelled turns stay
+  silent.
+- Tests updated for the new completion semantics (10 checks).
+
 ## [1.0.3] - 2026-08-15
 
 ### Changed
