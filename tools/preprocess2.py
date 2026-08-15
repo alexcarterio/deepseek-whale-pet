@@ -6,16 +6,16 @@
 
 Usage: python preprocess2.py [src_dir] [out_dir]
   src_dir: folder with front.png / side.png / back.png source images
-           (default: "sprites")
-  out_dir: output folder for the processed sprites (default: "sprites")
+           (default: "../sprites")
+  out_dir: output folder for the processed sprites (default: "../sprites")
 """
 from PIL import Image
 import os
 import sys
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-SRC = sys.argv[1] if len(sys.argv) > 1 else os.path.join(SCRIPT_DIR, "sprites")
-OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(SCRIPT_DIR, "sprites")
+SRC = sys.argv[1] if len(sys.argv) > 1 else os.path.join(SCRIPT_DIR, "..", "sprites")
+OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(SCRIPT_DIR, "..", "sprites")
 SIZES = {0.55: 187, 0.7: 238, 0.9: 306}
 
 os.makedirs(OUT, exist_ok=True)

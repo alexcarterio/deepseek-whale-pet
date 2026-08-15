@@ -47,5 +47,6 @@ def main(out_dir):
 
 
 if __name__ == "__main__":
-    out = sys.argv[1] if len(sys.argv) > 1 else os.path.join("samples", "chattts_loli")
+    out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "samples", "chattts_loli")
     main(out)

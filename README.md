@@ -86,9 +86,10 @@ For daily use, just double-click `start_pet.bat`.
 
 ## Configuration
 
-On first run the pet creates a `config.json`. In source mode it is created next
-to the script; in a frozen (`.exe`) build it is created under
-`%APPDATA%\WhalePet\config.json`.
+The default configuration template is
+[`config.example.json`](config.example.json). On first run the pet creates the
+actual `config.json` next to the script (in source mode) or under
+`%APPDATA%\WhalePet\config.json` (in a frozen `.exe` build).
 
 | Key | Default | Description |
 |---|---|---|
@@ -204,6 +205,53 @@ Set the environment variables before starting (or in your shell profile):
 To subscribe: install the ntfy app (or use the web UI at
 [https://ntfy.sh](https://ntfy.sh)), subscribe to your topic, and set
 `NTFY_TOPIC` to that exact value.
+
+---
+
+## Developer tools
+
+The `tools/` directory contains helper scripts used during development to
+audition voices, rework sprites, and package a release. They are **not required
+to run the pet** — ordinary users can ignore them.
+
+| Script | Purpose | Dependencies | Example |
+|---|---|---|---|
+| `tools/synth_candidates.py` | Generate several edge-tts "cutified" audition variants. | `edge-tts` (in `requirements.txt`) | `py tools/synth_candidates.py` |
+| `tools/synth_kids.py` | Generate gentle kids-voice pitch variants with edge-tts. | `edge-tts` (in `requirements.txt`) | `py tools/synth_kids.py` |
+| `tools/synth_chattts.py` | Synthesize ChatTTS audition candidates with different voice seeds. | `torch`, `torchaudio`, `ChatTTS` | `py tools/synth_chattts.py [out_dir]` |
+| `tools/synth_chattts_loli.py` | Pitch-shift the highest-F0 ChatTTS seeds into "loli" variants. | `torch`, `torchaudio`, `ChatTTS` | `py tools/synth_chattts_loli.py [out_dir]` |
+| `tools/synth_chattts_scan.py` | Scan 50 ChatTTS seeds and auto-pick girlish voices by F0. | `torch`, `torchaudio`, `ChatTTS` | `py tools/synth_chattts_scan.py [out_dir]` |
+| `tools/preprocess.py` | Rebuild three-view sprites from front/side/back source images. | `Pillow` (PIL) | `py tools/preprocess.py [src_dir] [out_dir]` |
+| `tools/preprocess2.py` | Edge decontamination + premultiplied-alpha sprite scaling. | `Pillow` (PIL) | `py tools/preprocess2.py [src_dir] [out_dir]` |
+| `tools/make_zip.py` | Package the runtime source into a shareable zip. | none | `py tools/make_zip.py` |
+
+The ChatTTS scripts need `torch`, `torchaudio`, and
+[2noise/ChatTTS](https://github.com/2noise/ChatTTS) installed (via pip or per its
+repository instructions); they are heavy and optional.
+
+---
+
+## Voice samples
+
+The `samples/` directory holds audition recordings of candidate voices: edge-tts
+variants (Xiaoyi / Xiaoxiao and friends) and ChatTTS multi-seed auditions. The
+pet's default voice is built in, so it runs fine **without** `samples/`. To
+regenerate the candidates, run the corresponding `tools/` script — the edge-tts
+scripts need nothing extra, while the ChatTTS scripts require installing `torch`
+and `ChatTTS` first.
+
+---
+
+## Running the tests
+
+```bat
+py tests/test_watch.py
+```
+
+The test requires `zstandard` (`pip install zstandard`). It drives the DSH
+event-state machine with fake (zstd-compressed) session logs and verifies that
+ordinary tool activity is not misreported as "waiting", that only questions and
+approvals report "waiting", and that only turn end reports "done".
 
 ---
 

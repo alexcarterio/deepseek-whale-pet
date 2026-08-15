@@ -4,3 +4,8 @@ dist/
 build/
 *.log
 .venv/
+whale_pet_source.zip
+
+# Runtime-generated user config (may contain an API key). The template is
+# tracked as config.example.json.
+config.json
