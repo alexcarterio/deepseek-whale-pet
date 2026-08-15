@@ -1,20 +1,21 @@
-# Whale Pet — Desktop Companion with Service Notifications
+# deepseek-whale-pet
 
-A transparent, always-on-top desktop pet for Windows. It is based on
-[1190fasheqi/dafeiyu-pet](https://github.com/1190fasheqi/dafeiyu-pet) (MIT
-License) and keeps every original feature, while adding a set of DSH
-(DeepSeek Harness) integration features: session-completion and
-waiting-for-user notifications, voice announcements, DeepSeek balance lookup,
-automatic DSH launch, and optional phone push notifications.
+A transparent, always-on-top desktop pet for Windows — a cute whale companion
+that lives on your desktop, walks around, talks, and keeps an eye on your
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH)
+sessions. When a DSH work turn finishes, it pops a speech bubble and announces
+it in a cute voice; when DSH is waiting for your approval or a question, it
+nudges you to act. It can also look up your DeepSeek API balance, launch DSH
+for you, and forward DSH events to your phone via ntfy.
 
-DSH (DeepSeek Harness) is a local AI assistant service. The pet reads DSH's
-session data in a **read-only** way and never modifies or restarts DSH.
+The pet reads DSH's session data in a **read-only** way and never modifies or
+restarts DSH.
 
 ---
 
 ## Features
 
-### Original features (fully retained)
+### Desktop pet
 
 - Three-view walking: side (auto-mirrored), back (walking up), front (walking down).
 - Three movement modes: **Free roam / Follow cursor / Stay put**.
@@ -31,7 +32,7 @@ session data in a **read-only** way and never modifies or restarts DSH.
 - Tray icon, always-on-top, click-through (mouse passthrough), start-on-boot,
   and remembered position/settings.
 
-### Enhanced features (added in this edition)
+### DSH integration
 
 - **DSH session-done notification**: when one DSH work turn finishes, the pet
   shows a bubble and speaks it aloud.
@@ -206,28 +207,6 @@ To subscribe: install the ntfy app (or use the web UI at
 
 ---
 
-## Upstream & Credits
-
-- **dafeiyu-pet** — the pet behavior and sprites are based on
-  [1190fasheqi/dafeiyu-pet](https://github.com/1190fasheqi/dafeiyu-pet)
-  ([MIT License](LICENSE)). See `NOTICE` for details.
-- **edge-tts** — online voice synthesis via
-  [rany2/edge-tts](https://github.com/rany2/edge-tts).
-- **ChatTTS** — the audition scripts use
-  [2noise/ChatTTS](https://github.com/2noise/ChatTTS).
-- **ntfy** — push notifications via
-  [binwiederhier/ntfy](https://github.com/binwiederhier/ntfy).
-- **wttr.in** — weather data from [wttr.in](https://wttr.in).
-
----
-
-## License
-
-Released under the [MIT License](LICENSE). The original `dafeiyu-pet` copyright
-notice is retained.
-
----
-
 ## FAQ / Troubleshooting
 
 **1. The pet does not speak.**
@@ -258,3 +237,28 @@ notice is retained.
 - Set `ds_api_key` in `config.json` (or set `DEEPSEEK_API_KEY` in
   `~/.dsh/.credentials.yaml`). The key must be a valid DeepSeek Open Platform
   key. The balance endpoint needs a working internet connection.
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE).
+
+---
+
+## Credits & References
+
+This project builds on the work of the following projects:
+
+- **dafeiyu-pet** — the pet behavior, sprites, and base application derive from
+  [1190fasheqi/dafeiyu-pet](https://github.com/1190fasheqi/dafeiyu-pet)
+  ([MIT License](LICENSE)). See `NOTICE` for details.
+- **edge-tts** — online voice synthesis via
+  [rany2/edge-tts](https://github.com/rany2/edge-tts).
+- **ChatTTS** — the audition scripts use
+  [2noise/ChatTTS](https://github.com/2noise/ChatTTS).
+- **ntfy** — push notifications via
+  [binwiederhier/ntfy](https://github.com/binwiederhier/ntfy).
+- **wttr.in** — weather data from [wttr.in](https://wttr.in).
+- **DeepSeek Harness** — the DSH session state this pet watches is produced by
+  [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness).
