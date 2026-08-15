@@ -29,6 +29,10 @@ def check(name, cond, detail=""):
     print(("PASS" if cond else "FAIL"), name, detail if not cond else "")
 
 
+def skip(name, why=""):
+    print("SKIP", name, why)
+
+
 def _locate_dsh_dir():
     """Locate the DSH install directory without hardcoding a drive letter:
     probe every existing drive root for a Codex\\dsh-web install."""
@@ -69,9 +73,12 @@ check("M3 commented line not extracted + real line extracted", key == "test-real
 os.environ["USERPROFILE"] = real_home
 os.environ["HOME"] = real_home
 
-# The real credentials file should still yield a key.
+# The real credentials file should still yield a key (only when present).
 real_key = load_key_from_dsh_credentials()
-check("M3 real DSH credentials still readable", bool(real_key))
+if os.path.exists(os.path.join(os.path.expanduser("~"), ".dsh", ".credentials.yaml")):
+    check("M3 real DSH credentials still readable", bool(real_key))
+else:
+    skip("M3 real DSH credentials still readable", "no local DSH credentials file on this machine")
 
 # ---------- L2: weather URL encoding ----------
 city = "New York"
@@ -83,10 +90,16 @@ check("L2 encoded value has no spaces / CJK residue", " " not in urllib.parse.qu
 # ---------- L1: DSH launch uses shell-free list execution ----------
 import dsh_service
 DSH_DIR = _locate_dsh_dir()
+# The following checks exercise a real DSH install; on a clean CI machine
+# without one they are skipped instead of failed.
+DSH_PRESENT = bool(DSH_DIR) and os.path.isdir(os.path.join(DSH_DIR, "node_modules"))
 svc = dsh_service.DshService(DSH_DIR, port=1, dry_run=True)
 argv = svc._launch_argv()
 check("L1 argv is a list ending in web", isinstance(argv, list) and argv[-1] == "web")
-check("L1 bin.js path exists", os.path.exists(argv[1]), argv[1] if not os.path.exists(argv[1]) else "")
+if DSH_PRESENT:
+    check("L1 bin.js path exists", os.path.exists(argv[1]), argv[1] if not os.path.exists(argv[1]) else "")
+else:
+    skip("L1 bin.js path exists", "no DSH install on this machine")
 check("L1 node is runnable (bundled or on PATH)",
       os.path.exists(argv[0]) or subprocess.run(["where", argv[0]], capture_output=True).returncode == 0)
 # Source-level confirmation: no shell=True (excluding docstrings/comments).
@@ -97,12 +110,19 @@ check("L1 source has explicit shell=False", "shell=False" in src)
 
 # dry-run must not launch and must return a command preview.
 res = svc.ensure_running()
-check("L1 dry-run does not actually launch", res.get("dry_run") is True and res.get("started") is False)
-check("L1 dry-run command preview is correct", isinstance(res.get("cmd"), str) and "bin.js" in res["cmd"])
+if DSH_PRESENT:
+    check("L1 dry-run does not actually launch", res.get("dry_run") is True and res.get("started") is False)
+    check("L1 dry-run command preview is correct", isinstance(res.get("cmd"), str) and "bin.js" in res["cmd"])
+else:
+    skip("L1 dry-run does not actually launch", "no DSH install on this machine")
+    skip("L1 dry-run command preview is correct", "no DSH install on this machine")
 
 # Live detection: DSH is running now -> already (no launch attempted).
-real = dsh_service.DshService(DSH_DIR, port=3080)
-check("L1 live detection returns already", real.ensure_running().get("already") is True)
+if DSH_PRESENT:
+    real = dsh_service.DshService(DSH_DIR, port=3080)
+    check("L1 live detection returns already", real.ensure_running().get("already") is True)
+else:
+    skip("L1 live detection returns already", "no DSH install on this machine")
 
 # ---------- #1: requirements includes zstandard ----------
 req = open(os.path.join(ROOT, "requirements.txt"), encoding="utf-8").read()
