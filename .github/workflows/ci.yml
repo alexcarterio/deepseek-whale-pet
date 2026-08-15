@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt zstandard
+      - name: Run unit tests
+        run: python tests/test_watch.py
+      - name: Compile-check all sources
+        run: |
+          python -m py_compile desktop_pet.py balance.py voice.py dsh_watch.py dsh_service.py dsh_push.py
+          python -m py_compile tools/synth_candidates.py tools/synth_kids.py tools/preprocess.py tools/preprocess2.py tools/make_zip.py
+          python -m py_compile tests/test_watch.py

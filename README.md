@@ -1,5 +1,10 @@
 # deepseek-whale-pet
 
+[![CI](https://github.com/alexcarterio/deepseek-whale-pet/actions/workflows/ci.yml/badge.svg)](https://github.com/alexcarterio/deepseek-whale-pet/actions/workflows/ci.yml)
+
+![Three views of the whale pet](assets/pet-showcase.png)
+![Walking animation](assets/pet-walk.gif)
+
 A transparent, always-on-top desktop pet for Windows — a cute whale companion
 that lives on your desktop, walks around, talks, and keeps an eye on your
 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH)

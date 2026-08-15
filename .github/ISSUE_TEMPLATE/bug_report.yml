@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a problem so it can be fixed
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected to happen instead.
+      placeholder: The pet does not show DSH notifications when...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps that trigger the problem.
+      placeholder: |
+        1. Start the pet with `start_pet.bat`
+        2. Finish a DSH work turn
+        3. No bubble or voice notification appears
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Windows version, Python version, and DSH version if relevant.
+      placeholder: Windows 11 23H2, Python 3.13.2, DSH 0.1.0-rc.6
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Paste any relevant log lines or error messages (remove personal data first).
+      render: shell
