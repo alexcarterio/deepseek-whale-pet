@@ -34,8 +34,9 @@ def skip(name, why=""):
 
 
 def _locate_dsh_dir():
-    """Locate the DSH install directory without hardcoding a drive letter:
-    probe every existing drive root for a Codex\\dsh-web install."""
+    """Locate a DSH install directory without hardcoding a drive letter:
+    probe every existing drive root, then every first-level subdirectory of
+    the Program Files folders, for a "dsh-web" directory."""
     for letter in string.ascii_uppercase:
         root = f"{letter}:\\"
         try:
@@ -44,9 +45,15 @@ def _locate_dsh_dir():
         except OSError:
             continue
         for pf in ("Program Files (x86)", "Program Files"):
-            candidate = os.path.join(root, pf, "Codex", "dsh-web")
-            if os.path.isdir(candidate):
-                return candidate
+            base = os.path.join(root, pf)
+            try:
+                subs = os.listdir(base)
+            except OSError:
+                continue
+            for sub in subs:
+                candidate = os.path.join(base, sub, "dsh-web")
+                if os.path.isdir(candidate):
+                    return candidate
     return ""
 
 
